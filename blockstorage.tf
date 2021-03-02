@@ -16,6 +16,7 @@ resource "oci_core_volume" "ISCSIDisk" {
 
 # Create Disk Attachment
 resource "oci_core_volume_attachment" "ISCSIDiskAttachment" {
+  depends_on = [ oci_core_volume.ISCSIDisk ]
   count           = var.attach_disks ? var.amount_of_disks : 0
   attachment_type = var.attachment_type
   instance_id     = var.linux_compute_id
