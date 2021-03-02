@@ -9,7 +9,7 @@ resource "oci_core_volume" "ISCSIDisk" {
   count               = var.amount_of_disks
   availability_domain = var.availability_domain
   compartment_id      = local.compartment_id
-  display_name        = "${var.volume_display_name}_${count.index}"
+  display_name        = "${var.compute_display_name}_${var.volume_display_name}_${count.index}"
   size_in_gbs         = var.disk_size_in_gb
   vpus_per_gb         = var.vpus_per_gb
 }
