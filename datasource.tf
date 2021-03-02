@@ -5,11 +5,6 @@ Copyright (c) 2017, 2020, Oracle and/or its affiliates. All rights reserved.
 */
 
 /********** Compartment and CF Accessors **********/
-data "oci_identity_availability_domain" "AD" {
-  compartment_id = var.tenancy_ocid
-  ad_number      = var.availability_domain_number
-}
-
 data "oci_identity_compartments" "COMPARTMENTS" {
   compartment_id            = var.tenancy_ocid
   compartment_id_in_subtree = true
@@ -34,7 +29,6 @@ data "oci_core_volume_backup_policies" "BACKUPPOLICYISCSI" {
 
 locals {
   compartment_id              = data.oci_identity_compartments.COMPARTMENTS.compartments[0].id
-  availability_domain         = data.oci_identity_availability_domain.AD.name
   backup_policy_iscsi_disk_id = data.oci_core_volume_backup_policies.BACKUPPOLICYISCSI.volume_backup_policies[0].id
 
 }

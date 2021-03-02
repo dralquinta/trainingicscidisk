@@ -76,6 +76,11 @@ variable "compute_display_name" {
   
 }
 
+variable "availability_domain" {
+  description = "Availability Domain where the block storage will be created at"
+  
+}
+
 /************* Host Variables *************/
 
 

@@ -7,7 +7,7 @@ Copyright (c) 2017, 2020, Oracle and/or its affiliates. All rights reserved.
 # Create Disk
 resource "oci_core_volume" "ISCSIDisk" {
   count               = var.amount_of_disks
-  availability_domain = local.availability_domain
+  availability_domain = var.availability_domain
   compartment_id      = local.compartment_id
   display_name        = "${var.volume_display_name}_${count.index}"
   size_in_gbs         = var.disk_size_in_gb
