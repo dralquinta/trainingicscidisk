@@ -28,9 +28,7 @@ variable "region" {
 variable "tenancy_ocid" {
   description = "Defines the OCID for Tenancy"
 }
-variable "availability_domain_number" {
-  description = "Defines the availability domain where OCI artifact will be created. This is a numeric value greater than 0"
-}
+
 variable "iscsi_disk_instance_compartment_name" {
   description = "Defines the compartment name where the infrastructure will be created"
 }
@@ -71,6 +69,11 @@ variable "backup_policy_level" {
 
 variable "vpus_per_gb" {
   default = 10
+}
+
+variable "compute_display_name" {
+  description = "Name of the compute where the disk will be attached to"
+  
 }
 
 /************* Host Variables *************/
