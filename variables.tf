@@ -36,6 +36,15 @@ variable "iscsi_disk_instance_compartment_name" {
 
 
 /************* Disk Variables *************/
+variable "ssh_private_is_path" {
+  description = "Determines if key is supposed to be on file or in text"
+  default = true  
+}
+
+variable "ssh_private_key" {
+  description = "Determines what is the private key to connect to machine"
+}
+
 variable "amount_of_disks" {
   description = "Amount of equally sized disks"
 }
