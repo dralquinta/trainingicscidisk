@@ -101,3 +101,54 @@ resource "null_resource" "vgcreate_exec" {
   }
 }
 
+
+resource "null_resource" "format_disk_exec" {
+  depends_on = [null_resource.vgcreate_exec]
+  count      = length(oci_core_volume_attachment.ISCSIDiskAttachment)
+  connection {
+    type        = "ssh"
+    host        = var.linux_compute_private_ip
+    user        = "opc"
+    private_key = var.ssh_private_is_path ? file(var.ssh_private_key) : var.ssh_private_key
+  }
+
+  # With provisioned disk, trigger fdisk, then pvcreate and vgcreate to tag the disk
+  provisioner "remote-exec" {
+    inline = [
+      "set -x",
+      "export DEVICE_ID=/dev/disk/by-path/ip-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}-iscsi-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn}-lun-1",
+      "export HAS_PARTITION=$(sudo partprobe -d -s /dev/disk/by-path/$${DEVICE_ID} | wc -l)",
+      "if [ $HAS_PARTITION -neq 0 ] ; then",            
+      "  sudo mkfs.xfs /dev/disk/by-path/$${DEVICE_ID}-part1",
+      "fi",
+    ]
+  }
+}
+
+resource "null_resource" "mount_disk_exec" {
+  depends_on = [null_resource.format_disk_exec]
+  count      = length(oci_core_volume_attachment.ISCSIDiskAttachment)
+  connection {
+    type        = "ssh"
+    host        = var.linux_compute_private_ip
+    user        = "opc"
+    private_key = var.ssh_private_is_path ? file(var.ssh_private_key) : var.ssh_private_key
+  }
+
+  # With provisioned disk, trigger fdisk, then pvcreate and vgcreate to tag the disk
+  provisioner "remote-exec" {
+    inline = [
+      "set +x",
+      "export MOUNTED_DISKS=$(cat /etc/fstab |grep u0${[count.index]} |wc -l)",
+      "if [ $MOUNTED_DISKS -eq 0 ] ; then",
+      "export DEVICE_ID=/dev/disk/by-path/ip-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}-iscsi-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn}-lun-1",
+      "sudo mkdir -p /u0${[count.index]}/",
+      "export UUID=$(sudo /usr/sbin/blkid -s UUID -o value /dev/disk/by-path/$${DEVICE_ID}-part1)",
+      "echo 'UUID='$${UUID}' /u0${[count.index]}/ xfs defaults,_netdev,nofail 0 2' | sudo tee -a /etc/fstab",
+      "sudo mount -a",
+      "cd /",
+      "fi",      
+    ]
+  }
+}
+
