@@ -35,7 +35,7 @@ variable "iscsi_disk_instance_compartment_name" {
 /************* Datasource Script Variables *************/
 
 
-/************* Host Variables *************/
+/************* Disk Variables *************/
 variable "amount_of_disks" {
   description = "Amount of equally sized disks"
 }
@@ -81,6 +81,10 @@ variable "availability_domain" {
   
 }
 
-/************* Host Variables *************/
+variable "linux_compute_private_ip" {
+  description = "Compute private IP to logon into machine"
+}
+
+/************* Disk Variables *************/
 
 
