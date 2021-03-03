@@ -96,7 +96,7 @@ resource "null_resource" "vgcreate_exec" {
     inline = [
       "set +x",
       "export DEVICE_ID=/dev/disk/by-path/ip-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}-iscsi-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn}-lun-1",
-      "${local.vgcreate} ${var.provisioning_display_name}_${count.index} $${DEVICE_ID}-part1",
+      "${local.vgcreate} ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].display_name}_${count.index} $${DEVICE_ID}-part1",
     ]
   }
 }
