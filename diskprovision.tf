@@ -118,8 +118,9 @@ resource "null_resource" "format_disk_exec" {
       "set -x",
       "export DEVICE_ID=/dev/disk/by-path/ip-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}-iscsi-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn}-lun-1",
       "export HAS_PARTITION=$(sudo partprobe -d -s $${DEVICE_ID} | wc -l)",
-      "if [ $HAS_PARTITION -ne 0 ] ; then",            
-      "sudo mkfs.xfs $${DEVICE_ID}-part1 -f",
+      "if [ $HAS_PARTITION -ne 0 ] ; then", 
+      "file $${DEVICE_ID}-part1 > /tmp/debugdiscoculiao.txt",           
+      "${local.mkfs_xfs} $${DEVICE_ID}-part1 -f",
       "fi",
     ]
   }
