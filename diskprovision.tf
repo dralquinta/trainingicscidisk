@@ -22,15 +22,6 @@ resource "null_resource" "provisioning_disk" {
     
     inline = [
       "set +x",
-      /*       "echo ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].id}",
-      "echo ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn}",
-      "echo ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}",
-      "echo ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}",
-      "echo ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].device}",
-      "echo ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].state}",
-      "echo ${var.provisioning_display_name}_${count.index}", */
-
-
       "${local.iscsiadm} -m node -o new -T ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn} -p ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}",
       "${local.iscsiadm} -m node -o update -T ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn} -n node.startup -v automatic",
       "${local.iscsiadm} -m node -T ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn} -p ${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port} -l",
