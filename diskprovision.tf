@@ -149,8 +149,9 @@ resource "null_resource" "mount_disk_exec" {
       "export DEVICE_ID=/dev/disk/by-path/ip-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].ipv4}:${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].port}-iscsi-${oci_core_volume_attachment.ISCSIDiskAttachment[count.index].iqn}-lun-1",
       "sudo mkdir -p /u0${count.index+1}/",
       "export UUID=$(sudo /usr/sbin/blkid -s UUID -o value $${DEVICE_ID}-part1)",
-      "echo 'UUID=$${UUID} /u0${count.index+1}/ xfs defaults,_netdev,nofail 0 2' | sudo tee -a /etc/fstab",
+      "echo 'UUID='$${UUID}' /u0${count.index+1}/ xfs defaults,_netdev,nofail 0 2' | sudo tee -a /etc/fstab",
       "sudo mount -a",
+      "sudo chown -R opc:opc /u0${count.index+1}/",
       "cd /",
       "fi",      
     ]
